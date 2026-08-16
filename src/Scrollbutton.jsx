@@ -2,8 +2,7 @@ import { useState, useEffect } from 'react';
 
 export default function ScrollButton() {
     const [isVisible, setIsVisible] = useState(false);
-    const scrollToTop = () => {
-      window.scrollTo({ top: 0, behavior: "smooth"});
+    
 
     useEffect(() => {  // scroll 
         const handleScroll = () => {
@@ -14,10 +13,10 @@ export default function ScrollButton() {
 
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
-    
-  
-    
-};
+
+    const scrollToTop = () => {
+      window.scrollTo({ top: 0, behavior: "smooth"});
+    };
 
 return (
     <button

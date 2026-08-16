@@ -14,7 +14,7 @@ const QUESTIONS = [
     {
         q: "Im having a hard time focusing lately",
         a: null, 
-        pomodoroList: true 
+        pomodoroList: true  //pomodoro technique information displayed under accordion questions  
     },
     {
         q: "I feel guilty about taking a break", 

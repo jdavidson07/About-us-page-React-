@@ -49,7 +49,7 @@ export default function AboutUs() {
     }
   }, [searchTerm]);
 
-  return (
+  return ( 
     <>
       <div className="header-wrapper">
         <div className="site-branding">
@@ -59,8 +59,8 @@ export default function AboutUs() {
       </div>
 
       <div className="top-content-row">
-        <div
-          className={`center-column ${matchedId === "hero" ? "search-match" : ""}`}
+        <div></div> 
+        <div className={`center-column ${matchedId === "hero" ? "search-match" : ""}`} // center column with search match
           ref={el => (sectionRefs.current[0] = el)}
         >
           <h2 className="about-us-title">ABOUT OUR BRAND</h2>
@@ -78,6 +78,13 @@ export default function AboutUs() {
 
         <div className="student-image-column">
           <img src="/images/student-support.jpg" className="student-support" alt="Student talking to staff in a support session" />
+        </div>
+      </div>
+
+      <div className="page-divider">
+        <div className="scroll-prompt">
+          <span>Scroll for more information</span> 
+          <i className="fa fa-chevron-down"></i>
         </div>
       </div>
 
@@ -153,6 +160,6 @@ export default function AboutUs() {
           <MilestoneTracker />
         </div>
       </div>
-    </>
+      </>
   );
 }
