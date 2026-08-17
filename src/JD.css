@@ -181,6 +181,9 @@ body {
 }
 
 .navbar__links {
+    background: none;
+    border: none; 
+    cursor: pointer;
     color: #FFE7FD;
     display: flex;
     align-items: center;
@@ -263,6 +266,9 @@ body {
     }
 
     #navbar__logo {
+        background: none;
+        border: none; 
+        cursor: pointer; 
         padding-left: 25px;
     }
 

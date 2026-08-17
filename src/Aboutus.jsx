@@ -53,7 +53,7 @@ export default function AboutUs() {
     <>
       <div className="header-wrapper">
         <div className="site-branding">
-          <img src="/images/new_stressless_logo.png" alt="StressLess logo" className="site-logo" />
+          <img src="/images/new_stressless_logo.png" alt="StressLess logo" className="logo" />
           <p className="gradient-text">Stress Less, Learn more</p>
         </div>
       </div>
@@ -145,8 +145,7 @@ export default function AboutUs() {
         <div className="quote-container">
           <i className="fa fa-quote-left quote-icon"></i>
           <p className="quote-text">
-            Having things in my life that I enjoy doing reduces the worries that I
-            get - <i>Adrian</i>
+            Having things in my life that I enjoy doing reduces the worries that I get - <i>Adrian</i>
           </p>
           <i className="fa fa-quote-right quote-icon"></i>
         </div>
