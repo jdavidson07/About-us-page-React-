@@ -9,18 +9,19 @@ export default function SearchBar() {
     setSearchTerm(value);
   };
 
- return ( //search bar code 
- <li className="navbar__search"> 
-    <form  onSubmit={handleSubmit}>
+  return (
+    <li className="navbar__search">
+      <form onSubmit={handleSubmit}>
         <input
-        type="text"
-        name="searchInput"
-        placeholder="Search..."
-        className="search-input"
+          type="text"
+          name="searchInput"
+          placeholder="Search..."
+          className="search__input"
         />
-        <button type="submit" className="search-btn"></button>
-        <i className="fas fa-search"></i>
-    </form>
-    </li>   
+        <button type="submit" className="search__btn">
+          <i className="fas fa-search"></i>
+        </button>
+      </form>
+    </li>
   );
 }
