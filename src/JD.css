@@ -153,6 +153,12 @@ body {
 }
 
 #navbar__logo {
+    background: none; 
+    border: none; 
+    cursor: pointer; 
+    padding: 0; 
+
+
     background-color: #5CE1EC;
     background-image: linear-gradient(to top, #8C52FF 0%, #5CE1EC 100% );
     background-size: 100%;
