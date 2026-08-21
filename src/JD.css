@@ -209,7 +209,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 0 1rem;
+    padding: 0 1.3rem;
     width: auto;
 }
 
@@ -218,7 +218,7 @@ body {
     justify-content: center;
     align-items: center;
     text-decoration: none;
-    padding: 10px 20px;
+    padding: 12px 25px;
     height:  100%;
     width: 100%;
     border: none;
@@ -227,6 +227,7 @@ body {
     background: #5CE1EC;
     color: #fff;
     font-family: 'Quicksand', sans-serif;
+    font-size: 1.1rem;
 }
 
 .button:hover {
