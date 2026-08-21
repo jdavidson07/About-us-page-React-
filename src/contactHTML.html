@@ -1,0 +1,90 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <title>StressLess-Contact</title>
+        <link rel="stylesheet" href="contactCSS.css">
+        <script src="contactJS.js"></script>
+    </head>
+    <body>
+        <!-- Navigation bar -->
+        <div class="header">
+        <nav class="bar">
+            <a href="#HOME">HOME</a>
+            <a class="open" href="#CONTACT">CONTACT</a>
+            <a href="#ABOUT-US">ABOUT US</a>
+            <a href="#RESOURCES">RESOURSES</a>
+            <a href="#COPING-TOOLS">COPING TOOLS</a>
+            <input type="text" placeholder="How can we help?">
+        </nav>
+        </div>
+
+        <!-- Main body -->
+        <div class="box">
+        
+            <!--Top left-->
+            <div class="leftBody">
+
+            <h1>Get in Touch</h1>
+            <p>
+                Please let us know if you have any suggestions
+                or improvements for our website! Or if you
+                experience any issues! :)
+            </p>
+            <img src="SL-Logo.png">
+            <p class="email">✉ help@stressless.com</p>
+
+            </div>
+
+            <!--Top right-->
+            <div class="rightBody">
+
+               <form name="Contact" onsubmit="return validateForm()">
+                <div class="row">
+                    <input type="text" id="firstName" placeholder="First Name">
+                    <input type="text" id="lastName" placeholder="Last Name">
+                </div>
+
+                <input type="email" id="email" placeholder="Email">
+                <input class="mesBox" type="text" id="message" placeholder="Message">
+
+                <button type="submit">Send</button>
+                <p id="errorMes" class="error"></p>
+               </form> 
+            </div>
+
+        </div>
+
+        <div class="lowerBox">
+            
+            <!--Lower left box-->
+            <div class="LLBox">
+                <h1>Call us ☏</h1>
+                <h2>07987 654321</h2>
+                <ul>
+                    <li>We're here to help!!</li>
+                    <li>Available Mon-Fri, 9am - 5pm</li>
+                </ul>
+            </div>
+
+            <!-- Lower right box -->
+            <div class="LRBox">
+                <h1>Chat with us</h1>
+                <button id="chat" class="chatButton">Let's talk</button>
+            </div>
+        </div>
+
+        <!-- Chat area -->
+        <div id="chatPanel" class="chatArea">
+            <div class="chatBar">
+                <span>Chat Bot</span>
+                <button id="exit">X</button>
+            </div>
+            <div class="chatMessages"></div>
+            <div class="chatFooter">
+                <input type="text" id="chatInput" placeholder="Send a message">
+                <button id="sendButton">Send</button>
+            </div>
+        </div>
+        
+    </body>
+</html>
