@@ -23,7 +23,7 @@ export default function Navbar() {
           <SearchBar />
 
           <li className="navbar__btn">
-            <button className="button">Contact Us</button>
+            <a href="/contact.html" className="button">Contact Us</a>
           </li>
         </ul>
       </div>
