@@ -14,9 +14,13 @@ export default function MilestoneTracker() {
 
   
   useEffect(() => {
+    try {
     const saved = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
     const recent = saved.filter(msg => Date.now() - msg.time < FORTY_EIGHT_HOURS);
     setMessages(recent);
+    } catch (error) {
+      console.error("Failed to parse community message from localStorage:", error);
+    }
   }, []);
 
   
@@ -28,7 +32,13 @@ export default function MilestoneTracker() {
   }, [showSuccess]);
 
   const handleShare = () => {
-    const lastSubmit = parseInt(localStorage.getItem("user_submitted_message"));
+    const trimmed = inputText.trim();
+
+    if (!trimmed) {
+      return; 
+    }
+    
+    const lastSubmit = parseInt(localStorage.getItem("user_submitted_message"), 10);
     const now = Date.now();
 
     if (lastSubmit && now - lastSubmit < TWENTY_FOUR_HOURS) {
@@ -36,31 +46,26 @@ export default function MilestoneTracker() {
       return;
     }
 
-    const trimmed = inputText.trim();
     const lower = trimmed.toLowerCase();
     const crisisDetected = CRISIS_WORDS.some(word => lower.includes(word));
 
     if (crisisDetected) {
       setIsCrisis(true);
       return;
-      }
-
-    if (trimmed.length > 0) {
+    }
       const newMessage = { text: trimmed, time: now };
+      const updatedMessages = [newMessage, ...messages];
+
 
       localStorage.setItem("user_submitted_message", now);
-      const updated = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
-      updated.push(newMessage);
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
-
-      setMessages(prev => [newMessage, ...prev]);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedMessages));
+      setMessages(updatedMessages);
       setShowSuccess(true);
       setInputText("");
-    }
   };
 
   const charCount = inputText.length;
-
+    
   return (
     <div className={`milestone-wrapper ${isFocused ? "focused" : ""}`}>
       <h5 className="milestone-title">
@@ -100,8 +105,8 @@ export default function MilestoneTracker() {
       )}
 
       <div id="milestone-feed">
-        {messages.map((msg, i) => (
-          <div className="milestone-item" key={i}>
+        {messages.map(msg => (
+          <div className="milestone-item" key={msg.time}>
             <p>"{msg.text}"</p>
           </div>
         ))}
