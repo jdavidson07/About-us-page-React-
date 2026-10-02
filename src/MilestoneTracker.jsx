@@ -48,12 +48,9 @@ export default function MilestoneTracker() {
 
   
   useEffect(() => {
-    const saved = readJSON(STORAGE_KEY, []);
-    const recent = (Array.isArray(saved) ? saved : []).filter(
-      msg => Date.now() - msg.time < FORTY_EIGHT_HOURS
-    );
-    writeJSON(STORAGE_KEY, recent);
-    setMessages([...recent].sort((a,b) => b.time - a.time)); //newest msg first 
+    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+    const recent = saved.filter(msg => Date.now() - msg.time < FORTY_EIGHT_HOURS);
+    setMessages(recent);
   }, []);
 
 
@@ -66,18 +63,8 @@ export default function MilestoneTracker() {
 
   
 
-    const handleShare = () => {
-      const trimmed = inputText.trim();
-      if (trimmed.length === 0) return;
-
-      if (isCrisisText(trimmed)) {
-        setLimitMsg("");
-        setIsCrisis(true);
-        return;
-      }
-      
-
-    const lastSubmit = Number(readJSON(LAST_SUBMIT_KEY, 0));
+  const handleShare = () => {
+    const lastSubmit = parseInt(localStorage.getItem("user_submitted_message"));
     const now = Date.now();
 
 
@@ -86,19 +73,31 @@ export default function MilestoneTracker() {
       return;
     }
 
-    const newMessage = { text: trimmed, time: now };
-    writeJSON(STORAGE_KEY, [...readJSON(STORAGE_KEY, []), newMessage]);
-    writeJSON(LAST_SUBMIT_KEY, now);
+    const trimmed = inputText.trim();
+    const lower = trimmed.toLowerCase();
+    const crisisDetected = CRISIS_WORDS.some(word => lower.includes(word));
 
-    setMessages(prev => [newMessage, ...prev]);
-    setIsCrisis(false);
-    setLimitMsg("");
-    setShowSuccess(true);
-    setInputText("");
+    if (crisisDetected) {
+      setIsCrisis(true);
+      return;
+      }
+
+    if (trimmed.length > 0) {
+      const newMessage = { text: trimmed, time: now };
+
+      localStorage.setItem("user_submitted_message", now);
+      const updated = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+      updated.push(newMessage);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+
+      setMessages(prev => [newMessage, ...prev]);
+      setShowSuccess(true);
+      setInputText("");
+    }
   };
 
   const charCount = inputText.length;
-
+    
   return (
     <div className={`milestone-wrapper ${isFocused ? "focused" : ""}`}>
       <h5 className="milestone-title">
@@ -139,8 +138,8 @@ export default function MilestoneTracker() {
       )}
 
       <div id="milestone-feed">
-        {messages.map((msg) => (
-          <div className="milestone-item" key={msg.time}>
+        {messages.map((msg, i) => (
+          <div className="milestone-item" key={i}>
             <p>"{msg.text}"</p>
           </div>
         ))}
