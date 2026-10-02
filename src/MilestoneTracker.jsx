@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
 
-const CRISIS_TERMS = ["suicide", "suicidal", "depressed", "emergency", "hurt myself", "hurting myself",
-  "self harm", "self-harm", "want to die", "dying", "end it all", "die", "kill myself",
-  "hopeless", "help me", ];
+const CRISIS_TERMS = [
+  "suicide", "suicidal", "depressed", "emergency", "hurt myself", "hurting myself",
+  "self harm", "self-harm", "want to die", "dying", "end it all", "die",
+  "kill myself", "hopeless", "help me",
+];
 
 const escapeRegex = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
@@ -29,13 +31,11 @@ const writeJSON = (key, value) => {
   } catch {
   
   }
-}; 
-
-
+};
 
 const TWENTY_FOUR_HOURS = 24 * 60 * 60 * 1000;
 const FORTY_EIGHT_HOURS = 48 * 60 * 60 * 1000;
-const STORAGE_KEY = "community_messages"; 
+const STORAGE_KEY = "community_messages";
 const LAST_SUBMIT_KEY = "user_submitted_message";
 
 export default function MilestoneTracker() {
@@ -46,13 +46,15 @@ export default function MilestoneTracker() {
   const [isFocused, setIsFocused] = useState(false);
   const [limitMsg, setLimitMsg] = useState("");
 
-  
+  // Load saved messages, drop expired ones, newest first
   useEffect(() => {
-    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
-    const recent = saved.filter(msg => Date.now() - msg.time < FORTY_EIGHT_HOURS);
-    setMessages(recent);
+    const saved = readJSON(STORAGE_KEY, []);
+    const recent = (Array.isArray(saved) ? saved : []).filter(
+      (msg) => Date.now() - msg.time < FORTY_EIGHT_HOURS
+    );
+    writeJSON(STORAGE_KEY, recent);
+    setMessages([...recent].sort((a, b) => b.time - a.time));
   }, []);
-
 
   useEffect(() => {
     if (showSuccess) {
@@ -61,43 +63,39 @@ export default function MilestoneTracker() {
     }
   }, [showSuccess]);
 
-  
-
   const handleShare = () => {
-    const lastSubmit = parseInt(localStorage.getItem("user_submitted_message"));
+    const trimmed = inputText.trim();
+    if (trimmed.length === 0) return;
+
+    // 1. Safety first: always runs, even if the user is rate-limited
+    if (isCrisisText(trimmed)) {
+      setLimitMsg("");
+      setIsCrisis(true);
+      return; 
+    }
+
+    // 2. Rate limit
     const now = Date.now();
-
-
+    const lastSubmit = Number(readJSON(LAST_SUBMIT_KEY, 0));
     if (lastSubmit && now - lastSubmit < TWENTY_FOUR_HOURS) {
       setLimitMsg("You have already shared a message today, please share one tomorrow!");
       return;
     }
 
-    const trimmed = inputText.trim();
-    const lower = trimmed.toLowerCase();
-    const crisisDetected = CRISIS_WORDS.some(word => lower.includes(word));
+    // 3. Save
+    const newMessage = { text: trimmed, time: now };
+    writeJSON(STORAGE_KEY, [...readJSON(STORAGE_KEY, []), newMessage]);
+    writeJSON(LAST_SUBMIT_KEY, now);
 
-    if (crisisDetected) {
-      setIsCrisis(true);
-      return;
-      }
-
-    if (trimmed.length > 0) {
-      const newMessage = { text: trimmed, time: now };
-
-      localStorage.setItem("user_submitted_message", now);
-      const updated = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
-      updated.push(newMessage);
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
-
-      setMessages(prev => [newMessage, ...prev]);
-      setShowSuccess(true);
-      setInputText("");
-    }
+    setMessages((prev) => [newMessage, ...prev]);
+    setIsCrisis(false);
+    setLimitMsg("");
+    setShowSuccess(true);
+    setInputText("");
   };
 
   const charCount = inputText.length;
-    
+
   return (
     <div className={`milestone-wrapper ${isFocused ? "focused" : ""}`}>
       <h5 className="milestone-title">
@@ -110,7 +108,7 @@ export default function MilestoneTracker() {
           maxLength={200}
           placeholder="How have you managed stress today?"
           value={inputText}
-          onChange={e => setInputText(e.target.value)}
+          onChange={(e) => setInputText(e.target.value)}
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
         />
@@ -121,14 +119,14 @@ export default function MilestoneTracker() {
           </span>
           <button id="milestone-btn" onClick={handleShare}>Share message</button>
         </div>
-        
+
         {showSuccess && <p id="success-msg">Milestone recorded, well done!</p>}
         {limitMsg && <p id="limit-msg" role="status">{limitMsg}</p>}
       </div>
 
       {isCrisis && (
         <div id="crisis-msg" role="alert">
-          <p> 
+          <p>
             <strong>It sounds like you're having a hard time right now.</strong> Please reach out to these resources: <br />
             Lifeline: 0808 808 8000 <br />
             Samaritans: 116 123
@@ -138,8 +136,8 @@ export default function MilestoneTracker() {
       )}
 
       <div id="milestone-feed">
-        {messages.map((msg, i) => (
-          <div className="milestone-item" key={i}>
+        {messages.map((msg) => (
+          <div className="milestone-item" key={msg.time}>
             <p>"{msg.text}"</p>
           </div>
         ))}
